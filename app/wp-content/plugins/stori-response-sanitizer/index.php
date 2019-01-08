@@ -103,7 +103,43 @@ function stori_get_all_users($data, $post, $context) {
 
 add_filter('rest_prepare_user', 'stori_get_all_users', 10, 3); 
 
+/**
+ * Undocumented function
+ *
+ * @param [type] $data
+ * @param [type] $post
+ * @param [type] $context
+ * @return void
+ */
+function stori_get_all_content_types($data, $post, $context) {
+  return [
+    'id'		    => $data->data['id'],
+    'slug'		  => $data->data['slug'],
+    'title'    	=> $data->data['title']['rendered']
+	];
+}
 
+add_filter('rest_prepare_stori_content_type', 'stori_get_all_content_types', 10, 3);
+
+/**
+ * Undocumented function
+ *
+ * @param [type] $data
+ * @param [type] $post
+ * @param [type] $context
+ * @return void
+ */
+function stori_get_all_templates($data, $post, $context) {
+  return [
+    'id'		    => $data->data['id'],
+    'slug'		  => $data->data['slug'],
+    'title'    	=> $data->data['title']['rendered'],
+    'content'   => $data->data['content']['rendered'],
+    'link'     	=> $data->data['link']
+	];
+}
+
+add_filter('rest_prepare_stori_template', 'stori_get_all_templates', 10, 3);
 
 /*
 

@@ -43,7 +43,7 @@ function stori_page_init() {
 
 add_action('admin_menu', 'stori_admin_menu');
 
-function stori_register_custom_types($name, $title, $description = '', $rewrite = null,  $supports = array('title'), $taxonomies = array('category'), $show_in_menu = true) {	
+function stori_register_custom_types($type = 'post', $name, $title, $description = '', $rewrite = null,  $supports = array('title'), $taxonomies = array('category'), $show_in_menu = true) {	
 	$plural = Inflect::pluralize($title);
 
 	$labels = array(
@@ -92,10 +92,12 @@ function stori_register_custom_types($name, $title, $description = '', $rewrite 
 		'has_archive'           => false,
 		'exclude_from_search'   => false,
 		'publicly_queryable'    => true,
-		'capability_type'       => 'post',
+		'capability_type'       => $type,
 		'rewrite' => array(
 			'slug' => (empty($rewrite) ? $name : $rewrite)
-		)
+		),
+		'show_in_rest'			=> true,
+		'rest_base'				=> $name		
      );
      
 	register_post_type($name, $args);
@@ -123,7 +125,7 @@ function stori_load_custom_types() {
 	if ($contents->have_posts()) {
 		while ($contents->have_posts()) {
 			$contents->the_post();
-			stori_register_custom_types(get_post_field('post_name'), get_the_title(), get_field('description'), null,  get_field('supports'), get_field('taxonomies'));
+			stori_register_custom_types('post', get_post_field('post_name'), get_the_title(), get_field('description'), null,  get_field('supports'), get_field('taxonomies'));
 		}
 	}
 
@@ -137,7 +139,7 @@ function stori_load_custom_types() {
  * @return void
  */
 function register_stori_content_setup_type() {
-	stori_register_custom_types('stori_content_type', 'Content Type', 'Content Type', 'content-types', array('title'), array(), false);
+	stori_register_custom_types('post', 'stori_content_type', 'Content Type', 'Content Type', 'content-types', array('title'), array(), false);
 }
 
 /**
@@ -146,7 +148,7 @@ function register_stori_content_setup_type() {
  * @return void
  */
 function register_stori_template_setup_type() {
-	stori_register_custom_types('stori_template', 'Templates', 'Page Templates', 'templates', array('title', 'editor'), array(), false);
+	stori_register_custom_types('page', 'stori_template', 'Templates', 'Page Templates', 'templates', array('title', 'editor'), array(), false);
 }
 
 /**
