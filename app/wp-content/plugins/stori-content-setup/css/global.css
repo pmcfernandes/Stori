@@ -1,0 +1,7 @@
+#posts-filter  + .acf-column-2 {
+    display: none;
+}
+
+.subsubsub  + .acf-columns-2 {
+    margin-right: initial;
+}

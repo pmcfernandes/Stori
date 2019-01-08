@@ -17,3 +17,27 @@ wp-content/plugins/hello.php
 /sitemap.xml
 /sitemap.xml.gz
 
+
+app/wp-includes/
+app/wp-admin/
+app/wp-content/themes/index\.php
+app/wp-content/plugins/akismet/
+app/wp-content/plugins/hello\.php
+app/wp-content/plugins/index\.php
+app/wp-content/index\.php
+app/index\.php
+app/license\.txt
+app/readme\.html
+app/wp-activate\.php
+app/wp-blog-header\.php
+app/wp-comments-post\.php
+app/wp-config-sample\.php
+app/wp-cron\.php
+app/wp-links-opml\.php
+app/wp-load\.php
+app/wp-login\.php
+app/wp-mail\.php
+app/wp-settings\.php
+app/wp-signup\.php
+app/wp-trackback\.php
+app/xmlrpc\.php
