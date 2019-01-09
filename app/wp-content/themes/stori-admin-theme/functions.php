@@ -1,17 +1,37 @@
 <?php
+    defined('ABSPATH') or exit;
 
-    function stori_redirect_to_admin() {        
-        global $pagenow;
-        
-        if (is_user_logged_in() || $pagenow == 'wp-login.php' || REST_REQUEST == true) {
-            return;
-        }
+    /**
+     * Change theme options to add new features
+     *
+     * @return void
+     */
+    function stori_theme_setup() {        
+        register_nav_menus(array(
+            'top'    => __('Top Menu', 'stori-admin-theme'),
+            'footer' => __('Footer Menu', 'stori-admin-theme'),
+        ));
 
-        wp_redirect('wp-login.php', 302);
+        add_theme_support('post-thumbnails');
     }
 
-    add_action('init', 'stori_redirect_to_admin');
+    add_action('after_setup_theme', 'stori_theme_setup');
 
+
+    /**
+     * Redirect to Login if not logged to create headless effect
+     *
+     * @return void
+     */
+    function stori_redirect_to_admin() {        
+        if (!is_admin()) {
+            header('HTTP/1.1 403 Forbidden');
+			header('Location: ' . wp_login_url());
+			die();
+        }        
+    }
+
+    add_action('wp', 'stori_redirect_to_admin', 0);
 
     /**
      * Remove unecessary widgets from dashboard

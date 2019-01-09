@@ -1,4 +1,5 @@
 <?php 
+defined('ABSPATH') or die('No script kiddies please!');
 
 include_once(dirname(__FILE__) . '/inc/plural.php');
 
@@ -14,8 +15,6 @@ include_once(dirname(__FILE__) . '/inc/plural.php');
 * Text Domain:       stori-content-setup
 */
 
-defined('ABSPATH') or die('No script kiddies please!');
- 
 /**
  * Create Stori menu
  *
@@ -25,8 +24,7 @@ function stori_admin_menu() {
      add_menu_page('Stori', 'Stori', 'manage_options', 'stori', 'stori_page_init', 'dashicons-dashboard', 2);
      add_submenu_page('stori', 'Content Setup', 'Content Setup', 'manage_options', 'edit.php?post_type=stori_content_type');
      add_submenu_page('stori', 'Fields', 'Fields', 'manage_options', 'edit.php?post_type=acf-field-group');
-     add_submenu_page('stori', 'Templates', 'Templates', 'manage_options', 'edit.php?post_type=stori_template');
-
+     add_submenu_page('stori', 'Templates', 'Templates', 'manage_options', 'edit.php?post_type=stori_template');	 
      remove_menu_page('edit.php?post_type=acf-field-group'); 
 }
 
@@ -38,6 +36,22 @@ function stori_admin_menu() {
 function stori_page_init() {
 ?>
 	 <h1>About Stori.</h1>
+	 <p>In simple terms, the plugin removes the frontend of the WordPress site. Post permalinks go straight to the editor page, and the theme is mostly redundant.</p>
+
+	 <h2>Dependencies</h2>
+	 <ul>
+	 	<li>Advanced Custom Fields <?php echo is_plugin_active('advanced-custom-fields/acf.php') ? "<span style=\"color:green\">Installed</span>" : "<span style=\"color:red\">Not Installed</span>" ?></li>
+		<li>Application Passwords <?php echo is_plugin_active('application-passwords/application-passwords.php') ? "<span style=\"color:green\">Installed</span>" : "<span style=\"color:red\">Not Installed</span>" ?></li>
+		<li>Classic Editor <?php echo is_plugin_active('classic-editor/classic-editor.php') ? "<span style=\"color:green\">Installed</span>" : "<span style=\"color:red\">Not Installed</span>" ?></li>
+		<li>WP-REST-API V2 Menus <?php echo is_plugin_active('wp-rest-api-v2-menus/wp-rest-api-v2-menus.php') ? "<span style=\"color:green\">Installed</span>" : "<span style=\"color:red\">Not Installed</span>" ?></li>
+		<li>Stori Content Setup <?php echo is_plugin_active('stori-content-setup/index.php') ? "<span style=\"color:green\">Installed</span>" : "<span style=\"color:red\">Not Installed</span>" ?></li>
+		<li>Stori Response Sanitizer <?php echo is_plugin_active('stori-response-sanitizer/index.php') ? "<span style=\"color:green\">Installed</span>" : "<span style=\"color:red\">Not Installed</span>" ?></li>
+		<li>Stori Theme <?php echo get_option('template') == 'stori-admin-theme' ? "<span style=\"color:green\">Installed</span>" : "<span style=\"color:red\">Not Installed</span>" ?></li>
+	 <ul>
+
+	 <h2>Release Notes</h2>
+	 <p><strong>1.0.0</strong><br />
+		First Release</p>
 <?php
 }
 
@@ -125,7 +139,13 @@ function stori_load_custom_types() {
 	if ($contents->have_posts()) {
 		while ($contents->have_posts()) {
 			$contents->the_post();
-			stori_register_custom_types('post', get_post_field('post_name'), get_the_title(), get_field('description'), null,  get_field('supports'), get_field('taxonomies'));
+			stori_register_custom_types('post'
+				, get_post_field('post_name')
+				, get_the_title()
+				, get_field('description')
+				, null
+				, get_field('supports')
+				, get_field('taxonomies'));
 		}
 	}
 
@@ -207,7 +227,7 @@ add_action('admin_enqueue_scripts', 'stori_enqueue_styles');
 function stori_init() {
      register_stori_content_setup_type();
 	 register_stori_template_setup_type();
-	 stori_load_custom_types();
+	 stori_load_custom_types();	 
 }
 
 add_action('init', 'stori_init');
@@ -282,3 +302,15 @@ function stori_acf_content_type_fields() {
 
 add_action('acf/init', 'stori_acf_content_type_fields');
 	
+/**
+ * Undocumented function
+ *
+ * @param [type] $api
+ * @return void
+ */
+function stori_acf_google_map_api( $api ){
+	$api['key'] = GOOGLE_MAPS_V3_API_KEY;
+	return $api;
+}
+
+add_filter('acf/fields/google_map/api', 'stori_acf_google_map_api');
