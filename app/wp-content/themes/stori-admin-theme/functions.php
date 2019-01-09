@@ -89,6 +89,7 @@
         $wp_admin_bar->remove_node('new-post');
         $wp_admin_bar->remove_node('new-link');
         $wp_admin_bar->remove_node('new-page');
+        $wp_admin_bar->remove_menu('comments');
     }
 
     add_action('admin_bar_menu', 'stori_admin_bar_menu_remove', 999);
