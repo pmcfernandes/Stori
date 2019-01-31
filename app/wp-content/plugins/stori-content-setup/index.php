@@ -199,13 +199,13 @@ function stori_monaco_enqueue_scripts() {
 	global $post;
 	
 	if (get_post_type() == 'stori_template') {
-		// wp_register_script('monaco-loader', 'https://unpkg.com/monaco-editor@0.8.3/min/vs/loader.js');
-		// wp_register_script('monaco', plugin_dir_url(__FILE__) . 'js/plugin-monaco.js');
-		// wp_enqueue_script(array('monaco-loader', 'monaco'));	
+		wp_register_script('monaco-loader', 'https://unpkg.com/monaco-editor@0.15.6/min/vs/loader.js', array('wp-backbone'), false, true);
+		wp_register_script('monaco', plugin_dir_url(__FILE__) . 'js/plugin-monaco.js', array('monaco-loader'), false, true);
+		wp_enqueue_script(array('monaco-loader', 'monaco'));	
 	}
 }
 
-add_action('admin_enqueue_scripts', 'stori_monaco_enqueue_scripts');
+add_action('admin_enqueue_scripts', 'stori_monaco_enqueue_scripts', 99, 0);
 
 /**
  * Custom css for admin UI
