@@ -60,6 +60,8 @@
      * @return void
      */
     function stori_admin_menu_remove() {
+        define('DISALLOW_FILE_EDIT', true);
+
         remove_menu_page('index.php');                  // Dashboard
         remove_menu_page('jetpack');                    // Jetpack*
         remove_menu_page('edit.php');                   // Posts
@@ -67,8 +69,6 @@
         remove_menu_page('edit-comments.php');          // Comments
         remove_menu_page('tools.php');                  // Tools
 
-        remove_submenu_page('themes.php', 'theme-editor.php');
-        remove_submenu_page('plugins.php', 'plugin-editor.php');
         remove_submenu_page('options-general.php', 'options-discussion.php');
         remove_submenu_page('options-general.php', 'options-writing.php');
         remove_submenu_page('options-general.php', 'options-reading.php');
