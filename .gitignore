@@ -41,3 +41,11 @@ app/wp-settings\.php
 app/wp-signup\.php
 app/wp-trackback\.php
 app/xmlrpc\.php
+
+app/wp-content/themes/twentysixteen/
+app/wp-content/themes/twentynineteen/
+app/wp-content/themes/twentyseventeen/
+app/wp-content/plugins/classic-editor/
+app/wp-content/plugins/wp-rest-api-v2-menus/
+app/wp-content/plugins/application-passwords/
+app/wp-content/plugins/advanced-custom-fields/
