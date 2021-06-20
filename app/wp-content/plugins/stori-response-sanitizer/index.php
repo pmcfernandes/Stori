@@ -13,7 +13,8 @@
 */
 
 defined('ABSPATH') or die('No script kiddies please!');
- 
+
+include_once('inc/jwt.php');
  
 /**
  * Change name of default rest url to 'api' prefix
@@ -25,6 +26,46 @@ function stori_rest_url_prefix() {
 }
 
 add_filter('rest_url_prefix', 'stori_rest_url_prefix');
+
+/**
+ * Remove default endpoints
+ *
+ * @param [type] $endpoints
+ * @return void
+ */
+function stori_remove_endpoints($endpoints) {
+    $endpoints_to_remove = array(
+        // 'media',
+        'types',
+        // 'statuses',
+        // 'taxonomies',
+        // 'tags',
+        // 'users',
+        'comments',
+        'settings',
+        'themes',
+        'blocks',
+        'oembed',
+        'posts',
+        'pages',
+        'block-renderer',
+        'search',
+        // 'categories'
+    );
+
+    foreach ($endpoints_to_remove as $endpoint) {
+        $base_endpoint = "/wp/v2/{$endpoint}";
+        foreach ($endpoints as $maybe_endpoint => $object) {
+            if (strpos($maybe_endpoint, $base_endpoint) !== false) {
+                unset($endpoints[$maybe_endpoint]);
+            }
+        }       
+    }
+
+    return $endpoints;
+}
+
+add_filter('rest_endpoints', 'stori_remove_endpoints');
 
 /**
  * Posts result sanitizer
@@ -55,6 +96,121 @@ function stori_get_all_posts($data, $post, $context) {
 }
 
 add_filter('rest_prepare_post', 'stori_get_all_posts', 10, 3);
+
+/**
+ * Register custom api routes
+ *
+ * @return void
+ */
+function stori_register_rest_routes() {
+    register_rest_route('jwt-auth/v1', 'token', array(
+        'methods'  => 'POST',
+        'callback' => 'stori_jwt_login'
+    ));
+}
+
+add_action('rest_api_init', 'stori_register_rest_routes');
+
+/**
+ * Validate user against database with JWT token in API routes
+ *
+ * @param [type] $user
+ * @return void
+ */
+function stori_json_jwt_auth_handler($user) {
+    if (is_admin() || wp_doing_ajax()) {    
+        return $user;
+    }
+
+	global $stori_json_jwt_auth_error;
+	$stori_json_jwt_auth_error = null;
+
+    $token = JWT::getAuthenticationBearerToken();
+
+    if ($token !== '') {
+        $jwt = JWT::decode($token);
+
+        if (isset($jwt)) {
+            // Check that we're trying to authenticate
+            if (!isset($jwt->username) || !isset($jwt->password)) {
+                $stori_json_jwt_auth_error = $user;
+                return null;
+            }
+
+            $username = $jwt->username;
+            $password = $jwt->password;
+
+            /**
+             * In multi-site, wp_authenticate_spam_check filter is run on authentication. This filter calls
+             * get_currentuserinfo which in turn calls the determine_current_user filter. This leads to infinite
+             * recursion and a stack overflow unless the current function is removed from the determine_current_user
+             * filter during authentication.
+             */
+            remove_filter('determine_current_user', 'stori_json_jwt_auth_handler', 20);
+            
+            $user = wp_authenticate($username, $password);
+            add_filter('determine_current_user', 'stori_json_jwt_auth_handler', 20);
+
+            if (!is_wp_error($user)) {
+                $stori_json_jwt_auth_error = true;
+                return $user->ID;
+            }
+        }
+    }
+
+    $stori_json_jwt_auth_error = $user;
+    return null;
+}
+
+add_filter('determine_current_user', 'stori_json_jwt_auth_handler', 20);
+
+/**
+ * Parse authentication error
+ *
+ * @param [type] $error
+ * @return void
+ */
+function stori_json_jwt_auth_error($error) {
+	if (!empty($error)) { // Passthrough other errors
+		return $error;
+	}
+
+	global $stori_json_jwt_auth_error;
+	return $stori_json_jwt_auth_error;
+}
+
+add_filter('rest_authentication_errors', 'stori_json_jwt_auth_error');
+
+/**
+ * Login user and generate a JWT token in header Authorization
+ *
+ * @param [type] $request
+ * @return void
+ */
+function stori_jwt_login($request) {
+    $user = wp_authenticate($request['username'], $request['password']);
+
+    if (is_wp_error($user)) {
+        return new WP_Error('rest_not_logged_in', 'You are not currently logged in.', array('status' => 401));
+    } else {
+        $jwt = JWT::encode(array(
+            'username' => $user->user_login,
+            'password' => $request['password']
+        ));     
+
+        $result = array(
+            'username'  => $user->user_login,
+            'email'     => $user->user_email,
+            'nicename'  => $user->user_nicename
+        );
+
+        $response = new WP_REST_Response($result);
+        $response->set_headers(array('Authorization' => 'Bearer ' . $jwt));
+        $response->set_status(200);
+    }
+
+    return $response;
+}
 
 /**
  * Comments result sanitizer
@@ -114,6 +270,10 @@ add_filter('rest_prepare_page', 'stori_get_all_pages', 10, 3);
  * @return void
  */
 function stori_get_all_users($data, $post, $context) {
+    if (!is_user_logged_in()) {
+        return new WP_Error('rest_not_logged_in', 'You are not currently logged in.', array('status' => 401));
+    }
+
 	return [
         'id'		  => $data->data['id'],
         'name'		  => $data->data['name'],
@@ -345,6 +505,11 @@ function stori_get_custom_field($object, $field_name, $request) {
  * @return void
  */
 function stori_get_all_content_types_data($data, $post, $context) {    
+    $mf = $data->data['post-meta-fields'];
+    if ($mf == null) {
+        $mf = array();
+    }
+
     $d = array_merge([
         'id'		=> $data->data['id'],
         'slug'		=> $data->data['slug'],
@@ -357,7 +522,7 @@ function stori_get_all_content_types_data($data, $post, $context) {
         'media'     => $data->data['featured_media'] ?? 0,
         'categories'=> $data->data['categories'] ?? array(),
         'tags'      => $data->data['tags'] ?? array()
-    ], $data->data['post-meta-fields']);
+    ], $mf);
 
     if (empty($d['title'])) {
         unset($d['title']);

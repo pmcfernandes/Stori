@@ -49,3 +49,7 @@ app/wp-content/plugins/classic-editor/
 app/wp-content/plugins/wp-rest-api-v2-menus/
 app/wp-content/plugins/application-passwords/
 app/wp-content/plugins/advanced-custom-fields/
+
+app/wp-content/themes/twentytwenty/
+
+app/wp-content/themes/twentytwentyone/

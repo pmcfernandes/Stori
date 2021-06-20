@@ -38,6 +38,15 @@ function stori_page_init() {
 	 <h1>About Stori.</h1>
 	 <p>In simple terms, the plugin removes the frontend of the WordPress site. Post permalinks go straight to the editor page, and the theme is mostly redundant.</p>
 
+	 <h2>Usage</h2>
+	 <p><code>/api/wp/v2/[custom_post_type]</code> or <code>/api/wp/v2/users</code> or <code>/api/wp/v2/media</code> or <code>/api/wp/v2/taxonomies</code> or <code>/api/wp/v2/tags</code> or <code>/api/wp/v2/categories</code> or <code>/api/wp/v2/stori_templates</code><p>
+
+	 <h2>Disabled Endpoints</h2>
+	 <p>By default <code>Posts</code>, <code>Pages</code>, <code>Comments</code>, <code>Settings</code>, <code>Themes</code>, <code>Plugins</code>, <code>Search</code> and <code>Blocks</code> because is not in agreement with objectives of this plugin.</p>
+
+	 <h2>Authorization</h2>
+	 <p>Use <code>/api/jwt-auth/v1/token</code> submiting a POST request with parameters <code>username</code> and <code>password</code>, this will return a response with user information and a header with JWT token authorization.<br /><strong>Note: </strong>To secure your application don't use own password, please use <a href="/wp-admin/profile.php">application password</a> instead.</p>
+
 	 <h2>Dependencies</h2>
 	 <ul>
 	 	<li>Advanced Custom Fields <?php echo is_plugin_active('advanced-custom-fields/acf.php') ? "<span style=\"color:green\">Installed</span>" : "<span style=\"color:red\">Not Installed</span>" ?></li>
@@ -50,8 +59,17 @@ function stori_page_init() {
 	 <ul>
 
 	 <h2>Release Notes</h2>
-	 <p><strong>1.0.0</strong><br />
-		First Release</p>
+	 <p><strong>1.0.0</strong>
+		<ul>
+			<li>First Release</li>
+		</ul>
+	 <p><strong>1.1.0</strong>
+		<ul>
+			<li>Fixed Custom Post Types endpoints</li>
+			<li>Disabled default WordPress endpoints</li>
+			<li>Disabed X-WP-Nounce authentication and replace it using JWT token authentication</li>
+		<ul>	
+	 </p>
 <?php
 }
 
@@ -308,9 +326,28 @@ add_action('acf/init', 'stori_acf_content_type_fields');
  * @param [type] $api
  * @return void
  */
-function stori_acf_google_map_api( $api ){
-	$api['key'] = GOOGLE_MAPS_V3_API_KEY;
+function stori_acf_google_map_api($api) {
+	if (defined('GOOGLE_MAPS_V3_API_KEY')) {
+		$api['key'] = GOOGLE_MAPS_V3_API_KEY;
+	}
+	
 	return $api;
 }
 
 add_filter('acf/fields/google_map/api', 'stori_acf_google_map_api');
+
+/**
+ * Enable Application password authentication for API
+ *
+ * @param [type] $enable
+ * @return void
+ */
+function stori_two_factor_user_api_login_enable($enable) {
+    if (did_action('application_password_did_authenticate')) {
+        return true;
+    }
+
+    return $enable;
+}
+
+add_filter('two_factor_user_api_login_enable', 'stori_two_factor_user_api_login_enable');
