@@ -36,10 +36,10 @@ function stori_admin_menu() {
 function stori_page_init() {
 ?>
 	 <h1>About Stori.</h1>
-	 <p>In simple terms, the plugin removes the frontend of the WordPress site. Post permalinks go straight to the editor page, and the theme is mostly redundant.</p>
+	 <p>In simple terms, the plugin removes the frontend of the WordPress site. Post permalinks go straight to the editor page and the theme is mostly redundant.</p>
 
 	 <h2>Usage</h2>
-	 <p><code>/api/wp/v2/[custom_post_type]</code> or <code>/api/wp/v2/users</code> or <code>/api/wp/v2/media</code> or <code>/api/wp/v2/taxonomies</code> or <code>/api/wp/v2/tags</code> or <code>/api/wp/v2/categories</code> or <code>/api/wp/v2/stori_templates</code><p>
+	 <p><code>/api/wp/v2/[custom_post_type]</code> or <code>/api/wp/v2/users</code> or <code>/api/wp/v2/media</code> or <code>/api/wp/v2/taxonomies</code> or <code>/api/wp/v2/tags</code> or <code>/api/wp/v2/categories</code> or <code>/api/wp/v2/stori_template</code><p>
 
 	 <h2>Disabled Endpoints</h2>
 	 <p>By default <code>Posts</code>, <code>Pages</code>, <code>Comments</code>, <code>Settings</code>, <code>Themes</code>, <code>Plugins</code>, <code>Search</code> and <code>Blocks</code> because is not in agreement with objectives of this plugin.</p>

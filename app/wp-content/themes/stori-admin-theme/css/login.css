@@ -1,3 +1,7 @@
+.login {
+    background-color: #fff;
+}
+
 .login h1 a {
     background-image: none, url('../img/logo.png');
     background-size: auto auto;
