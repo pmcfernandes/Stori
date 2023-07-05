@@ -278,6 +278,7 @@ function stori_acf_content_type_fields() {
 				'choices' 		=> array(
 					'title'		=> 'Title',
 					'excerpt'	=> 'Excerpt',
+					'editor'	=> 'Editor',
 					'author'	=> 'Author',
 					'thumbnail'	=> 'Thumbnail'
 				),

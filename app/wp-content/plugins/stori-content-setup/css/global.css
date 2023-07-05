@@ -5,3 +5,7 @@
 .subsubsub + .acf-columns-2 {
     margin-right: initial;
 }
+
+#tmpl-acf-field-group-pro-features, .acf-nav-upgrade-wrap, .acf-admin-toolbar {
+    display: none !important;
+}

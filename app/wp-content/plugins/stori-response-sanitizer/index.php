@@ -254,7 +254,7 @@ function stori_get_all_pages($data, $post, $context) {
         'author'    => $data->data['author'],
         'media'     => $data->data['featured_media'],
         'meta'      => array(
-        'template'  => $data->data['template'],
+            'template'  => $data->data['template'],
         )    
 	];
 }
@@ -293,15 +293,15 @@ add_filter('rest_prepare_user', 'stori_get_all_users', 10, 3);
  * @return void
  */
 function stori_get_all_categories($data, $post, $context) {
-  return [
-    'id'		    => $data->data['id'],
-    'count'		    => $data->data['count'],
-    'parent'		=> $data->data['parent'],
-    'slug'		    => $data->data['slug'],
-    'name'		    => $data->data['name'],
-    'description'	=> $data->data['description'],
-    'link'		    => $data->data['link'],
-	];
+    return [
+        'id'		    => $data->data['id'],
+        'count'		    => $data->data['count'],
+        'parent'		=> $data->data['parent'],
+        'slug'		    => $data->data['slug'],
+        'name'		    => $data->data['name'],
+        'description'	=> $data->data['description'],
+        'link'		    => $data->data['link'],
+    ];
 }
 
 add_filter('rest_prepare_category', 'stori_get_all_categories', 10, 3);
@@ -315,10 +315,10 @@ add_filter('rest_prepare_category', 'stori_get_all_categories', 10, 3);
  * @return void
  */
 function stori_get_all_statuses($data, $post, $context) {
-  return [
-    'name'	=> $data->data['name'],
-    'slug'	=> $data->data['slug'],
- ];
+    return [
+        'name'	=> $data->data['name'],
+        'slug'	=> $data->data['slug'],
+    ];
 }
 
 add_filter('rest_prepare_status', 'stori_get_all_statuses', 10, 3);
@@ -370,13 +370,13 @@ add_filter('rest_prepare_post_tag', 'stori_get_all_tags', 10, 3);
  * @return void
  */
 function stori_get_all_post_types($data, $post, $context) {
-  return [
-    'name'	        => $data->data['name'],
-    'slug'	        => $data->data['slug'],
-    'description'	=> $data->data['description'],
-    'rest'	        => $data->data['rest_base'],
-    'taxonomies'	=> $data->data['taxonomies']    
-  ];
+    return [
+        'name'	        => $data->data['name'],
+        'slug'	        => $data->data['slug'],
+        'description'	=> $data->data['description'],
+        'rest'	        => $data->data['rest_base'],
+        'taxonomies'	=> $data->data['taxonomies']    
+    ];
 }
 
 add_filter('rest_prepare_post_type', 'stori_get_all_post_types', 10, 3);
@@ -391,17 +391,17 @@ add_filter('rest_prepare_post_type', 'stori_get_all_post_types', 10, 3);
  */
 function stori_get_all_media($data, $post, $context) {
    return [
-      'id'	        => $data->data['id'],
-      'date'	    => $data->data['date'],
-      'slug'	    => $data->data['slug'],
-      'title'	    => $data->data['title']['rendered'],
-      'caption'	    => $data->data['caption']['rendered'],
-      'alt_text'	=> $data->data['alt_text'],
-      'type'	    => $data->data['media_type'],
-      'mime_type'	=> $data->data['mime_type'],
-      'author'	    => $data->data['author'],
-      'related'	    => $data->data['post'],
-      'link'	    => $data->data['source_url']    
+        'id'	        => $data->data['id'],
+        'date'	    => $data->data['date'],
+        'slug'	    => $data->data['slug'],
+        'title'	    => $data->data['title']['rendered'],
+        'caption'	    => $data->data['caption']['rendered'],
+        'alt_text'	=> $data->data['alt_text'],
+        'type'	    => $data->data['media_type'],
+        'mime_type'	=> $data->data['mime_type'],
+        'author'	    => $data->data['author'],
+        'related'	    => $data->data['post'],
+        'link'	    => $data->data['source_url']    
     ];
 }
 
@@ -416,11 +416,11 @@ add_filter('rest_prepare_attachment', 'stori_get_all_media', 10, 3);
  * @return void
  */
 function stori_get_all_content_types($data, $post, $context) {
-  return [
-    'id'		=> $data->data['id'],
-    'slug'		=> $data->data['slug'],
-    'title'    	=> $data->data['title']['rendered']
-  ];
+    return [
+        'id'		=> $data->data['id'],
+        'slug'		=> $data->data['slug'],
+        'title'    	=> $data->data['title']['rendered']
+    ];
 }
 
 add_filter('rest_prepare_stori_content_type', 'stori_get_all_content_types', 10, 3);
@@ -434,13 +434,13 @@ add_filter('rest_prepare_stori_content_type', 'stori_get_all_content_types', 10,
  * @return void
  */
 function stori_get_all_templates($data, $post, $context) {
-  return [
-    'id'		=> $data->data['id'],
-    'slug'		=> $data->data['slug'],
-    'title'    	=> $data->data['title']['rendered'],
-    'content'   => $data->data['content']['rendered'],
-    'link'     	=> $data->data['link']
-	];
+    return [
+        'id'		=> $data->data['id'],
+        'slug'		=> $data->data['slug'],
+        'title'    	=> $data->data['title']['rendered'],
+        'content'   => $data->data['content']['rendered'],
+        'link'     	=> $data->data['link']
+    ];
 }
 
 add_filter('rest_prepare_stori_template', 'stori_get_all_templates', 10, 3);
@@ -524,6 +524,8 @@ function stori_get_all_content_types_data($data, $post, $context) {
         'tags'      => $data->data['tags'] ?? array()
     ], $mf);
 
+    unset($d['link']);
+
     if (empty($d['title'])) {
         unset($d['title']);
     }
@@ -546,6 +548,10 @@ function stori_get_all_content_types_data($data, $post, $context) {
 
     if (count($d['tags']) == 0) {
         unset($d['tags']);
+    }
+
+    if (count($d['author']) == 0) {
+        unset($d['author']);
     }
 
     return $d;
