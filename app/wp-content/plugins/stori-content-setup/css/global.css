@@ -9,3 +9,8 @@
 #tmpl-acf-field-group-pro-features, .acf-nav-upgrade-wrap, .acf-admin-toolbar {
     display: none !important;
 }
+
+
+.acf-admin-page .wrap {
+    margin-top: initial;
+}

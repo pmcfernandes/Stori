@@ -24,10 +24,20 @@
      * @return void
      */
     function stori_redirect_to_admin() {        
-        if (!is_admin()) {
-            header('HTTP/1.1 403 Forbidden');
-			header('Location: ' . wp_login_url());
-			die();
+        if (!is_admin()) {  
+            if (is_user_logged_in()) {
+                wp_safe_redirect(admin_url('post.php?post=' . get_the_id() . '&action=edit'));
+            } else {
+                header('HTTP/1.1 403 Forbidden');
+
+                if (defined('HEADLESS_MODE_CLIENT_URL')) {
+                    header('Location: ' . HEADLESS_MODE_CLIENT_URL, true, 302);
+                } else {
+                    header('Location: ' . wp_login_url());
+                }
+    
+                die();
+            }
         }        
     }
 
@@ -73,11 +83,11 @@
         remove_submenu_page('options-general.php', 'options-writing.php');
         remove_submenu_page('options-general.php', 'options-reading.php');
         remove_submenu_page('options-general.php', 'privacy.php');
-
         remove_submenu_page('edit.php?post_type=acf-field-group', 'acf-tools');
+        remove_submenu_page('themes.php', 'customize.php?return=' . urlencode($_SERVER['SCRIPT_NAME']));
     }
 
-    add_action('admin_menu', 'stori_admin_menu_remove');
+    add_action('admin_menu', 'stori_admin_menu_remove', 999);
     
     /**
      * Remove admin bar menu items

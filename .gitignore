@@ -21,9 +21,15 @@ wp-content/plugins/hello.php
 app/wp-includes/
 app/wp-admin/
 app/wp-content/themes/index\.php
-app/wp-content/plugins/akismet/
+app/wp-content/plugins/advanced-custom-fields/
+app/wp-content/plugins/application-passwords/
+app/wp-content/plugins/classic-editor/
+app/wp-content/plugins/wp-rest-api-v2-menus/
+app/wp-content/plugins/wp-graphql/
 app/wp-content/plugins/hello\.php
 app/wp-content/plugins/index\.php
+app/wp-content/uploads/
+
 app/wp-content/index\.php
 app/index\.php
 app/license\.txt
@@ -51,5 +57,5 @@ app/wp-content/plugins/application-passwords/
 app/wp-content/plugins/advanced-custom-fields/
 
 app/wp-content/themes/twentytwenty/
-
 app/wp-content/themes/twentytwentyone/
+app/wp-content/themes/twentytwentythree/
