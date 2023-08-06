@@ -30,6 +30,7 @@ function stori_remove_endpoints($endpoints) {
         // 'taxonomies',
         // 'tags',
         // 'users',
+        // "categories",
         'comments',
         'settings',
         'themes',
@@ -39,7 +40,22 @@ function stori_remove_endpoints($endpoints) {
         'pages',
         'block-renderer',
         'search',
-        // 'categories'
+        "menus",
+        "menu-items",
+        "templates",
+        "template-parts",
+        "navigation",
+        "stori_content_type",
+        "block-types",
+        "global-styles",
+        "plugins",  
+        "sidebars",
+        "widget-types",
+        "widgets",
+        "block-directory",
+        "pattern-directory",
+        "block-patterns",
+        "menu-locations"
     );
 
     foreach ($endpoints_to_remove as $endpoint) {

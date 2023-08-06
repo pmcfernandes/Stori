@@ -94,6 +94,7 @@ function stori_page_init() {
 			<li>Use HEADLESS_MODE_CLIENT_URL to redirect client to other url instead admin if set</li>
 			<li>Uses site_url() instead of home_url() to build the API URL</li>
 			<li>Publish to netlify for headless production</li>	
+			<li>Enable Cors for non-local urls</li>
 		<ul>	
 	 </p>
 <?php

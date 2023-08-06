@@ -70,7 +70,7 @@ function stori_graphql_register_types() {
             'select' => 'String',
             'checkbox' => ['list_of' => 'String'],
             'radio' => 'String',
-            'button_group',
+            'button_group' =>  ['list_of' => 'String'],
             'true_false' => 'Boolean',
             'link' => 'AcfLink',
             'post_object' => 'PostObjectUnion',
@@ -101,7 +101,7 @@ function stori_graphql_register_types() {
 		'wp_block',
 		'wp_template',
 		'wp_template_part',
-		'wp_global_styles',
+		'wp_global_styles',     
 		'wp_navigation',
 		'acf-taxonomy',
 		'acf-post-type',
@@ -125,7 +125,8 @@ function stori_graphql_register_types() {
                                     'type' => $field_types[$field['type']],
                                     'description' => $field['label'],
                                     'resolve' => function( \WPGraphQL\Model\Post $post, $args, $context, $info) use ($field) {
-                                          return get_field($field['name'], $post->ID);
+                                          $data = get_field($field['name'], $post->ID);              
+                                          return $data;
                                     }
                               ));
                         }
