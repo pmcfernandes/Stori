@@ -72,13 +72,13 @@ function stori_graphql_register_types() {
             'radio' => 'String',
             'button_group' =>  ['list_of' => 'String'],
             'true_false' => 'Boolean',
-            'link' => 'AcfLink',
+            'link' => 'String',
             'post_object' => 'PostObjectUnion',
             'page_link' => 'PostObjectUnion',
             'relationship' => 'PostObjectUnion',
             'taxonomy' => 'TermObjectUnion',
             'user' => 'User',
-            'google_map' => 'ACF_GoogleMap',
+            'google_map' => ['list_of' => 'String'],
             'date_picker' => 'String',
             'date_time_picker' => 'String',
             'time_picker' => 'String',
@@ -125,8 +125,22 @@ function stori_graphql_register_types() {
                                     'type' => $field_types[$field['type']],
                                     'description' => $field['label'],
                                     'resolve' => function( \WPGraphQL\Model\Post $post, $args, $context, $info) use ($field) {
-                                          $data = get_field($field['name'], $post->ID);              
-                                          return $data;
+                                          $data = get_field($field['name'], $post->ID, true);    
+                                          switch ($field['type']) {
+                                                case "google_map":
+                                                      $location = array();
+                                                      foreach(array('street_name', 'street_number', 'city', 'post_code','state', 'country', 'lat', 'lng') as $i => $k) {
+                                                            if(isset($data[$k])) {
+                                                                  $location[$k] = $data[$k];
+                                                            }
+                                                      }
+
+                                                      return $location;
+                                                default:
+                                                     break;
+                                          }           
+                                          
+                                          return !empty($data) ? $data : null; 
                                     }
                               ));
                         }
